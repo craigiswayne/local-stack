@@ -1,0 +1,6 @@
+{
+    "config": {
+      "sort-packages": true,
+      "github-protocols": ["ssh","https"],
+    }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "smashboard",
+  "version": "0.0.1",
+  "description": "My Web Dev ToolBox",
+  "main": "smashboard.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/craigiswayne/smashboard.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/craigiswayne/smasboard/issues"
+  },
+  "homepage": "https://github.com/craigiswayne/smasboard#readme",
+  "devDependencies": {
+    "inquirer": "^6.1.0",
+    "manakin": "^0.5.1"
+  }
+}

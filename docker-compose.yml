@@ -1,0 +1,110 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:5
+    container_name: wp-local-docker-mysql
+    volumes:
+      - "./data/db:/var/lib/mysql:delegated"
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: password
+  mailcatcher:
+     image: schickling/mailcatcher
+     container_name: wp-local-docker-mailcatcher
+     restart: always
+     ports:
+       - "1025:1025"
+       - "1080:1080" # UI Available at http://localhost:1080
+     environment:
+       MAILCATCHER_PORT: 1025
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.5
+    container_name: wp-local-docker-elasticsearch
+    # see: https://docs.docker.com/config/containers/start-containers-automatically/
+    # "always" will restart the container when they exit or when docker restarts
+    restart: always
+    environment:
+      ES_JAVA_OPTS: "-Xms750m -Xmx750m"
+    ports:
+      - "9200:9200" # http://localhost:9200/
+    volumes:
+      - "./config/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml"
+      - "./config/elasticsearch/plugins:/usr/share/elasticsearch/plugins"
+      - "./data/elasticsearch:/usr/share/elasticsearch/data:delegated"
+  kibana:
+    depends_on:
+      - elasticsearch
+    image: docker.elastic.co/kibana/kibana:6.3.2
+    ports:
+      - "5601:5601" # http://localhost:9200/
+  phpfpm:
+    # Contains WP-CLI
+    image: craigiswayne/php-fpm
+    container_name: craigiswayne-phpfpm
+    depends_on:
+      - mysql
+      - elasticsearch
+    volumes:
+      # Mounts your local DOCROOT to the containers DOCROOT
+      - "~/code:/var/www/html:cached"
+
+      # Merge custom php.ini configs with container configs
+      - "./config/php-fpm/php.ini:/usr/local/etc/php/php.ini:delegated"
+
+      # Merge custom xdebug configs with container configs
+      - "./config/php-fpm/docker-php-ext-xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini:delegated"
+
+      # Merge your local ssh keys with the containers keys so that you have the same access via the container
+      - "~/.ssh:/var/www/.ssh:delegated"
+
+      # Allows you to view markdown files accessed via the browser, see nginx configs for more info
+      - "./config/php-fpm/markdown-parser.php:/var/www/markdown-parser.php:delegated"
+
+      # Some extra php configs that may be needed
+      # - "./config/php-fpm/auto_prepend_file.php:/var/www/auto_prepend_file.php:delegated"
+
+      # Allows you to have a global wp-cli config, overridable in each project ofcourse
+      - "./config/wp-cli/wp-cli.yml:/var/www/wp-cli.yml:delegated"
+
+      # Make the default localhost file accessible in the container
+      - "./config/php-fpm/index.php:/var/www/html/index.php:delegated"
+
+      # Makes your local composer cache directory accessible in the container, useful when running composer via the container
+      - "~/.composer:/var/www/.composer:delegated"
+
+      # Links your current gitconfig to the dev box gitconfig
+      - "~/.gitconfig:/var/www/.gitconfig:delegated"
+
+      # Override php-fpm configs, mainly used to enable the slowlog
+      - "./config/php-fpm/www.conf:/usr/local/etc/php-fpm.d/zz-docker-custom.conf"
+    restart: always
+    cap_add:
+      - SYS_PTRACE
+  nginx:
+    depends_on:
+      - phpfpm
+    ports:
+      - "80:80"
+      - "443:443"
+    image: nginx:latest
+    container_name: wp-local-docker-nginx
+    volumes:
+      - "~/code:/var/www/html:cached"
+      - "./config/nginx/errors:/var/www/errors"
+      - "./config/nginx/conf.d:/etc/nginx/conf.d"
+      - "./config/certs:/etc/nginx/certs"
+    restart: always
+  wpsnapshots:
+    image: 10up/wpsnapshots
+    container_name: wp-local-docker-wpsnapshots
+    depends_on:
+      - mysql
+      - phpfpm
+    volumes:
+      - "./config/wpsnapshots:/wpsnapshots"
+      - "~/code:/var/www/html"

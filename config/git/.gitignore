@@ -1,0 +1,17 @@
+# Mac OS
+.DS_Store
+
+# Node
+/node_modules/
+
+# IntelliJ
+/.idea/
+/*.code-workspace
+/.run/*.xml
+
+# Angular specific exclusions
+/coverage/
+/src/coverage-report.xml
+
+# Misc
+/wiki/
