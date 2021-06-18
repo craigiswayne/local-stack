@@ -9,11 +9,12 @@ RUN apt-get update && apt-get install -y \
 		subversion \
 		wget \
 		libxml2-dev \
-    # need to figure out how to re-enable mail sent to be caught
+        # need to figure out how to re-enable mail sent to be caught
 		# ssmtp \
 		imagemagick \
 		libmagickwand-dev \
-		iputils-ping \ # needed for ping command
+		# needed for ping command
+		iputils-ping \
 		unzip \
 		iproute2 \
 		libicu-dev \

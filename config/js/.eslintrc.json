@@ -5,11 +5,11 @@
        "es6": "true"
    },
    "extends": [
-    "plugin:@angular-eslint/recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking",
-    "prettier",
-    "prettier/@typescript-eslint"
+          "plugin:@angular-eslint/recommended",
+          "plugin:@typescript-eslint/recommended",
+          "plugin:@typescript-eslint/recommended-requiring-type-checking",
+          "prettier",
+          "prettier/@typescript-eslint"
    ],
    "parser": "@typescript-eslint/parser",
    "parserOptions": {
@@ -21,7 +21,16 @@
           "@typescript-eslint/tslint"
    ],
    "rules": {
-    "@angular-eslint/directive-selector": ["error", { "type":   "attribute", "prefix": "ourprefix", style: "camelCase"}],
-    "@angular-eslint/component-selector": ["error", { "type": "element", "prefix": "ourcomponent", style: "cebab-case"}]
+          "@angular-eslint/directive-selector": ["error", { "type":   "attribute", "prefix": "ourprefix", style: "camelCase"}],
+          "@angular-eslint/component-selector": ["error", { "type": "element", "prefix": "ourcomponent", style: "cebab-case"}],
+          "comma-dangle": ["error", "never"],
+          "no-useless-escape": ["error"],
+          "object-curly-spacing": ["error", "always"],
+          "@typescript-eslint/member-ordering": ["error"],
+          "@typescript-eslint/no-empty-function": ["error"],
+          "@typescript-eslint/no-explicit-any": ["error"],
+          "@typescript-eslint/no-inferrable-types": ["error"],
+          "@typescript-eslint/no-unused-vars-experimental": ["error"],
+          "@typescript-eslint/no-unused-expressions": ["error"]
    }
 }

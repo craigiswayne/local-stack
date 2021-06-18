@@ -1,5 +1,6 @@
 # Craigs Getting Started
 1. First Setup your localhost cert (see section ## HTTPS (SSL))
+1. run `sh bin/docker-build.sh`
 2. Then from the repo root run `sh bin/restart-docker-compose.sh`
 3. You should be able to hit `https://localhost` at this point
 4. Add your host entries
